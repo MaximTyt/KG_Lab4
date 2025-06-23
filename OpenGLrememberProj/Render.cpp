@@ -37,7 +37,7 @@ bool lightMode = true;
 #define PUSH glPushMatrix()
 
 
-ObjFile *model;
+ObjFile* model;
 
 Texture texture1;
 Texture sTex;
@@ -63,7 +63,7 @@ public:
 	//углы поворота камеры
 	double fi1, fi2;
 
-	
+
 	//значния масеры по умолчанию
 	CustomCamera()
 	{
@@ -72,16 +72,16 @@ public:
 		fi2 = 1;
 	}
 
-	
+
 	//считает позицию камеры, исходя из углов поворота, вызывается движком
 	virtual void SetUpCamera()
 	{
 
 		lookPoint.setCoords(0, 0, 0);
 
-		pos.setCoords(camDist*cos(fi2)*cos(fi1),
-			camDist*cos(fi2)*sin(fi1),
-			camDist*sin(fi2));
+		pos.setCoords(camDist * cos(fi2) * cos(fi1),
+			camDist * cos(fi2) * sin(fi1),
+			camDist * sin(fi2));
 
 		if (cos(fi2) <= 0)
 			normal.setCoords(0, 0, -1);
@@ -165,7 +165,7 @@ public:
 		return glm::lookAt(Position, Position + Front, Up);
 	}
 
-	
+
 private:
 	// calculates the front vector from the Camera's (updated) Euler Angles
 	void updateCameraVectors()
@@ -193,11 +193,11 @@ public:
 		pos = Vector3(1, 1, 3);
 	}
 
-	
+
 	//рисует сферу и линии под источником света, вызывается движком
 	void  DrawLightGhismo()
 	{
-		
+
 		glActiveTexture_ptr(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		Shader::DontUseShaders();
@@ -206,19 +206,19 @@ public:
 		bool f2 = glIsEnabled(GL_TEXTURE_2D);
 		glDisable(GL_TEXTURE_2D);
 		bool f3 = glIsEnabled(GL_DEPTH_TEST);
-		
+
 		glDisable(GL_DEPTH_TEST);
 		glColor3d(0.9, 0.8, 0);
 		Sphere s;
 		s.pos = pos;
-		s.scale = s.scale*0.08;
+		s.scale = s.scale * 0.08;
 		s.Show();
 
 		if (OpenGL::isKeyPressed('G'))
 		{
 			glColor3d(0, 0, 0);
 			//линия от источника света до окружности
-				glBegin(GL_LINES);
+			glBegin(GL_LINES);
 			glVertex3d(pos.X(), pos.Y(), pos.Z());
 			glVertex3d(pos.X(), pos.Y(), 0);
 			glEnd();
@@ -226,7 +226,7 @@ public:
 			//рисуем окруность
 			Circle c;
 			c.pos.setCoords(pos.X(), pos.Y(), 0);
-			c.scale = c.scale*1.5;
+			c.scale = c.scale * 1.5;
 			c.Show();
 		}
 		/*
@@ -271,13 +271,13 @@ int mouseX = 0, mouseY = 0;
 
 
 float offsetX = 0, offsetY = 0;
-float zoom=1;
+float zoom = 1;
 float Time = 0;
 int tick_o = 0;
 int tick_n = 0;
 
 //обработчик движения мыши
-void mouseEvent(OpenGL *ogl, int mX, int mY)
+void mouseEvent(OpenGL* ogl, int mX, int mY)
 {
 	int dx = mouseX - mX;
 	int dy = mouseY - mY;
@@ -287,19 +287,19 @@ void mouseEvent(OpenGL *ogl, int mX, int mY)
 	//меняем углы камеры при нажатой левой кнопке мыши
 	if (OpenGL::isKeyPressed(VK_RBUTTON))
 	{
-		camera.fi1 += 0.01*dx;
-		camera.fi2 += -0.01*dy;
+		camera.fi1 += 0.01 * dx;
+		camera.fi2 += -0.01 * dy;
 	}
 
 
 	if (OpenGL::isKeyPressed(VK_LBUTTON))
 	{
-		offsetX -= 1.0*dx/ogl->getWidth()/zoom;
-		offsetY += 1.0*dy/ogl->getHeight()/zoom;
+		offsetX -= 1.0 * dx / ogl->getWidth() / zoom;
+		offsetY += 1.0 * dy / ogl->getHeight() / zoom;
 	}
 
 
-	
+
 	//двигаем свет по плоскости, в точку где мышь
 	if (OpenGL::isKeyPressed('G') && !OpenGL::isKeyPressed(VK_LBUTTON))
 	{
@@ -308,7 +308,7 @@ void mouseEvent(OpenGL *ogl, int mX, int mY)
 		ScreenToClient(ogl->getHwnd(), POINT);
 		POINT->y = ogl->getHeight() - POINT->y;
 
-		Ray r = camera.getLookRay(POINT->x, POINT->y,60,ogl->aspect);
+		Ray r = camera.getLookRay(POINT->x, POINT->y, 60, ogl->aspect);
 
 		double z = light.pos.Z();
 
@@ -318,29 +318,29 @@ void mouseEvent(OpenGL *ogl, int mX, int mY)
 		else
 			k = (z - r.origin.Z()) / r.direction.Z();
 
-		x = k*r.direction.X() + r.origin.X();
-		y = k*r.direction.Y() + r.origin.Y();
+		x = k * r.direction.X() + r.origin.X();
+		y = k * r.direction.Y() + r.origin.Y();
 
 		light.pos = Vector3(x, y, z);
 	}
 
 	if (OpenGL::isKeyPressed('G') && OpenGL::isKeyPressed(VK_LBUTTON))
 	{
-		light.pos = light.pos + Vector3(0, 0, 0.02*dy);
+		light.pos = light.pos + Vector3(0, 0, 0.02 * dy);
 	}
 
-	
+
 }
 
 //обработчик вращения колеса  мыши
-void mouseWheelEvent(OpenGL *ogl, int delta)
+void mouseWheelEvent(OpenGL* ogl, int delta)
 {
 
 
-	float _tmpZ = delta*0.003;
+	float _tmpZ = delta * 0.003;
 	if (ogl->isKeyPressed('Z'))
 		_tmpZ *= 10;
-	zoom += 0.2*zoom*_tmpZ;
+	zoom += 0.2 * zoom * _tmpZ;
 
 
 	if (delta < 0 && camera.camDist <= 1)
@@ -348,11 +348,14 @@ void mouseWheelEvent(OpenGL *ogl, int delta)
 	if (delta > 0 && camera.camDist >= 100)
 		return;
 
-	camera.camDist += 0.01*delta;
+	camera.camDist += 0.01 * delta;
 }
 
+
+const int numoftext = 4;
+int thistext = 0;
 //обработчик нажатия кнопок клавиатуры
-void keyDownEvent(OpenGL *ogl, int key)
+void keyDownEvent(OpenGL* ogl, int key)
 {
 	if (key == 'L')
 	{
@@ -362,7 +365,7 @@ void keyDownEvent(OpenGL *ogl, int key)
 	if (key == 'T')
 	{
 		textureMode = !textureMode;
-	}	   
+	}
 
 	if (key == 'R')
 	{
@@ -371,6 +374,19 @@ void keyDownEvent(OpenGL *ogl, int key)
 		camera.camDist = 15;
 
 		light.pos = Vector3(1, 1, 3);
+	}
+
+	if (key == '1')
+	{
+
+		if (thistext < numoftext - 1)
+		{
+			thistext++;
+		}
+		else
+		{
+			thistext = 0;
+		}
 	}
 
 	if (key == 'F')
@@ -394,7 +410,7 @@ void keyDownEvent(OpenGL *ogl, int key)
 		Time = 0;
 }
 
-void keyUpEvent(OpenGL *ogl, int key)
+void keyUpEvent(OpenGL* ogl, int key)
 {
 
 }
@@ -402,10 +418,10 @@ void keyUpEvent(OpenGL *ogl, int key)
 
 void DrawQuad()
 {
-	double A[] = { 0,0 };
-	double B[] = { 1,0 };
-	double C[] = { 1,1 };
-	double D[] = { 0,1 };
+	double A[] = { 0,1 };
+	double B[] = { 0,0 };
+	double C[] = { 0,1 };
+	double D[] = { 1,1 };
 	glBegin(GL_QUADS);
 	glColor3d(.5, 0, 0);
 	glNormal3d(0, 0, 1);
@@ -431,13 +447,54 @@ void DrawQuad()
 //	glGenerateMipmap = (PFNGLGENERATEMIPMAPPROC)wglGetProcAddress("glGenerateMipmap");
 //}
 
-ObjFile objModel,monkey;
+unsigned int loadTexture(const char* file_name)
+{
+	unsigned int textureID;
+	glGenTextures(1, &textureID);
+
+	int width, height, nrComponents;
+	unsigned char* data = stbi_load(file_name, &width, &height, &nrComponents, 0);
+	if (data)
+	{
+		GLenum format{};
+		if (nrComponents == 1)
+			format = GL_RED;
+		else if (nrComponents == 3)
+			format = GL_RGB;
+		else if (nrComponents == 4)
+			format = GL_RGBA;
+
+		glBindTexture(GL_TEXTURE_2D, textureID);
+		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap_ptr(GL_TEXTURE_2D);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT); // for this tutorial: use GL_CLAMP_TO_EDGE to prevent semi-transparent borders. Due to interpolation it takes texels from next repeat 
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		stbi_image_free(data);
+	}
+	else
+	{
+		std::cout << "Texture failed to load at path: " << file_name << std::endl;
+		stbi_image_free(data);
+	}
+
+	return textureID;
+}
+
+
+ObjFile objModel, monkey;
 
 Texture monkeyTex;
 
+unsigned int diffuseMap[numoftext];
+unsigned int normalMap[numoftext];
+
 //выполняется перед первым рендером
-void initRender(OpenGL *ogl)
-{	
+void initRender(OpenGL* ogl)
+{
 	//настройка текстур
 
 	//4 байта на хранение пикселя
@@ -448,8 +505,8 @@ void initRender(OpenGL *ogl)
 
 	//включаем текстуры
 	glEnable(GL_TEXTURE_2D);
-	
-	
+
+
 
 
 	//камеру и свет привязываем к "движку"
@@ -461,7 +518,7 @@ void initRender(OpenGL *ogl)
 	glEnable(GL_NORMALIZE);
 
 	// устранение ступенчатости для линий
-	glEnable(GL_LINE_SMOOTH); 
+	glEnable(GL_LINE_SMOOTH);
 
 
 	//   задать параметры освещения
@@ -506,89 +563,63 @@ void initRender(OpenGL *ogl)
 	norm.LoadShaderFromFile();
 	norm.Compile();
 
-	 //так как гит игнорит модели *.obj файлы, так как они совпадают по расширению с объектными файлами, 
-	 // создающимися во время компиляции, я переименовал модели в *.obj_m
-	/*loadModel("models\\lpgun6.obj_m", &objModel);*/
+	//так как гит игнорит модели *.obj файлы, так как они совпадают по расширению с объектными файлами, 
+	// создающимися во время компиляции, я переименовал модели в *.obj_m
+   /*loadModel("models\\lpgun6.obj_m", &objModel);*/
 
-	//glActiveTexture(GL_TEXTURE0);
-	//Diffuse.loadTextureFromFile("textures//diffuse.bmp");
-	//Diffuse.bindTexture();
+   //glActiveTexture(GL_TEXTURE0);
+   //Diffuse.loadTextureFromFile("textures//diffuse.bmp");
+   //Diffuse.bindTexture();
 
-	//glActiveTexture(GL_TEXTURE1);
-	///*loadModel("models\\monkey.obj_m", &monkey);
-	//monkeyTex.loadTextureFromFile("textures//tex.bmp");
-	//monkeyTex.bindTexture();*/
+   //glActiveTexture(GL_TEXTURE1);
+   ///*loadModel("models\\monkey.obj_m", &monkey);
+   //monkeyTex.loadTextureFromFile("textures//tex.bmp");
+   //monkeyTex.bindTexture();*/
 
-	//Normal.loadTextureFromFile("textures//normal.bmp");
-	//Normal.bindTexture();	
+   //Normal.loadTextureFromFile("textures//normal.bmp");
+   //Normal.bindTexture();	
+
+	for (int i = 0; i < numoftext; ++i)
+	{
+		std::string s1 = "textures/diffuse" + std::to_string(i) + ".bmp";
+		std::string s2 = "textures/normal" + std::to_string(i) + ".bmp";
+		diffuseMap[i] = loadTexture(s1.data());
+		normalMap[i] = loadTexture(s2.data());
+	}
+
 
 	tick_n = GetTickCount();
 	tick_o = tick_n;
 
 	rec.setSize(300, 100);
-	rec.setPosition(10, ogl->getHeight() - 100-10);
-	rec.setText("T - вкл/выкл текстур\nL - вкл/выкл освещение\nF - Свет из камеры\nG - двигать свет по горизонтали\nG+ЛКМ двигать свет по вертекали",0,0,0);
+	rec.setPosition(10, ogl->getHeight() - 100 - 10);
+	rec.setText("1 - смена текстур\nT - вкл/выкл текстур\nL - вкл/выкл освещение\nF - Свет из камеры\nG - двигать свет по горизонтали\nG+ЛКМ двигать свет по вертекали", 0, 0, 0);
 
-	
-}
 
-unsigned int loadTexture(char *file_name)
-{
-	unsigned int textureID;
-	glGenTextures(1, &textureID);
-
-	int width, height, nrComponents;
-	unsigned char* data = stbi_load(file_name, &width, &height, &nrComponents, 0);
-	if (data)
-	{
-		GLenum format{};
-		if (nrComponents == 1)
-			format = GL_RED;
-		else if (nrComponents == 3)
-			format = GL_RGB;
-		else if (nrComponents == 4)
-			format = GL_RGBA;
-
-		glBindTexture(GL_TEXTURE_2D, textureID);
-		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap_ptr(GL_TEXTURE_2D);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT); // for this tutorial: use GL_CLAMP_TO_EDGE to prevent semi-transparent borders. Due to interpolation it takes texels from next repeat 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-		stbi_image_free(data);
-	}
-	else
-	{
-		std::cout << "Texture failed to load at path: " << file_name << std::endl;
-		stbi_image_free(data);
-	}
-
-	return textureID;
 }
 
 
 
-unsigned int quadVAO = 0;
-unsigned int quadVBO;
-void renderQuad()
+
+
+void renderQuad(glm::vec3& pos_1, glm::vec3& pos_2, glm::vec3& pos_3, glm::vec3& pos_4, glm::vec3 _nm)
 {
+	unsigned int quadVAO = 0;
+	unsigned int quadVBO;
 	if (quadVAO == 0)
 	{
 		// positions
-		glm::vec3 pos1(-1.0f, 1.0f, 0.0f);
-		glm::vec3 pos2(-1.0f, -1.0f, 0.0f);
-		glm::vec3 pos3(1.0f, -1.0f, 0.0f);
-		glm::vec3 pos4(1.0f, 1.0f, 0.0f);
+		glm::vec3 pos1(pos_1);
+		glm::vec3 pos2(pos_2);
+		glm::vec3 pos3(pos_3);
+		glm::vec3 pos4(pos_4);
 		// texture coordinates
 		glm::vec2 uv1(0.0f, 1.0f);
 		glm::vec2 uv2(0.0f, 0.0f);
 		glm::vec2 uv3(1.0f, 0.0f);
 		glm::vec2 uv4(1.0f, 1.0f);
 		// normal vector
-		glm::vec3 nm(0.0f, 0.0f, 1.0f);
+		glm::vec3 nm(_nm);
 
 		// calculate tangent/bitangent vectors of both triangles
 		glm::vec3 tangent1, bitangent1;
@@ -638,7 +669,7 @@ void renderQuad()
 			pos1.x, pos1.y, pos1.z, nm.x, nm.y, nm.z, uv1.x, uv1.y, tangent2.x, tangent2.y, tangent2.z, bitangent2.x, bitangent2.y, bitangent2.z,
 			pos3.x, pos3.y, pos3.z, nm.x, nm.y, nm.z, uv3.x, uv3.y, tangent2.x, tangent2.y, tangent2.z, bitangent2.x, bitangent2.y, bitangent2.z,
 			pos4.x, pos4.y, pos4.z, nm.x, nm.y, nm.z, uv4.x, uv4.y, tangent2.x, tangent2.y, tangent2.z, bitangent2.x, bitangent2.y, bitangent2.z
-		};		
+		};
 		// configure plane VAO
 		glGenVertexArrays_ptr(1, &quadVAO);
 		glGenBuffers_ptr(1, &quadVBO);
@@ -661,11 +692,11 @@ void renderQuad()
 	glBindVertexArray_ptr(0);
 }
 const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCR_HEIGHT = 400;
 
 void Render(OpenGL* ogl)
-{   
-	
+{
+
 	tick_o = tick_n;
 	tick_n = GetTickCount();
 	Time += (tick_n - tick_o) / 1000.0;
@@ -782,7 +813,7 @@ void Render(OpenGL* ogl)
 	/*glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);*/
 
-	
+
 	norm.UseShader();
 	/*glm::vec3 lightPos1(0.5f, 1.0f, 0.3f);*/
 	unsigned int location;
@@ -794,15 +825,13 @@ void Render(OpenGL* ogl)
 	glUniform1iARB(normal, 1);*/
 
 
-	unsigned int diffuseMap = loadTexture("textures/diffuse.bmp");
-	
-	unsigned int normalMap = loadTexture("textures/normal.bmp");
+
 	norm.setInt("diffuseMap", 0);
 	norm.setInt("normalMap", 1);
 	glm::mat4 projection = glm::perspective(glm::radians((float)camera.camDist), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 	glm::mat4 view = camera.GetViewMatrix();
 
-		
+
 	/*shader.setMat4("projection", projection);*/
 	location = glGetUniformLocation_ptr(norm.program, "projection");
 	glUniformMatrix4fv_ptr(location, 1, GL_FALSE, &projection[0][0]);
@@ -823,10 +852,15 @@ void Render(OpenGL* ogl)
 
 
 	glActiveTexture_ptr(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, diffuseMap);
+	glBindTexture(GL_TEXTURE_2D, diffuseMap[thistext]);
 	glActiveTexture_ptr(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, normalMap);
-	renderQuad();
+	glBindTexture(GL_TEXTURE_2D, normalMap[thistext]);
+	renderQuad(glm::vec3(-1.0f, -1.0f, -1.0f), glm::vec3(1.0f, -1.0f, -1.0f), glm::vec3(1.0f, 1.0f, -1.0f), glm::vec3(-1.0f, 1.0f, -1.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+	renderQuad(glm::vec3(-1.0f, -1.0f, -1.0f), glm::vec3(-1.0f, -1.0f, 1.0f), glm::vec3(1.0f, -1.0f, 1.0f), glm::vec3(1.0f, -1.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f));
+	renderQuad(glm::vec3(-1.0f, -1.0f, -1.0f), glm::vec3(-1.0f, -1.0f, 1.0f), glm::vec3(-1.0f, 1.0f, 1.0f), glm::vec3(-1.0f, 1.0f, -1.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
+	renderQuad(glm::vec3(-1.0f, 1.0f, -1.0f), glm::vec3(-1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	renderQuad(glm::vec3(1.0f, 1.0f, -1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, -1.0f, 1.0f), glm::vec3(1.0f, -1.0f, -1.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	renderQuad(glm::vec3(-1.0f, -1.0f, 1.0f), glm::vec3(1.0f, -1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(-1.0f, 1.0f, 1.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 	glm::vec3 lightPos = glm::vec3(light.pos.X(), light.pos.Y(), light.pos.Z());
 	model = glm::mat4(1.0f);// Матрица модели : единичная матрица (Модель находится в начале координат)
 	model = glm::translate(model, lightPos);
@@ -836,13 +870,13 @@ void Render(OpenGL* ogl)
 	glUniformMatrix4fv_ptr(location, 1, GL_FALSE, &model[0][0]);
 	/*Diffuse.bindTexture();
 	Normal.bindTexture();*/
-	
-	
-	
+
+
+
 
 	//////Рисование фрактала
 
-	
+
 	/*
 	{
 
@@ -870,10 +904,10 @@ void Render(OpenGL* ogl)
 
 	}
 	*/
-	
-	
+
+
 	//////Овал Кассини
-	
+
 	/*
 	{
 
@@ -896,25 +930,15 @@ void Render(OpenGL* ogl)
 	}
 
 	*/
-
-	
-	
-	
-
-	
 	Shader::DontUseShaders();
-
-	
-	
 }   //конец тела функции
 
 
 bool gui_init = false;
 
 //рисует интерфейс, вызывется после обычного рендера
-void RenderGUI(OpenGL *ogl)
+void RenderGUI(OpenGL* ogl)
 {
-	
 	Shader::DontUseShaders();
 
 	glMatrixMode(GL_PROJECTION);
@@ -923,21 +947,13 @@ void RenderGUI(OpenGL *ogl)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glDisable(GL_LIGHTING);
-	
 
 	glActiveTexture_ptr(GL_TEXTURE0);
 	rec.Draw();
-
-
-		
-	Shader::DontUseShaders(); 
-
-
-
-	
+	Shader::DontUseShaders();
 }
 
-void resizeEvent(OpenGL *ogl, int newW, int newH)
+void resizeEvent(OpenGL* ogl, int newW, int newH)
 {
 	rec.setPosition(10, newH - 100 - 10);
 }

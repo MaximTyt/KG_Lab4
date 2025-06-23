@@ -191,7 +191,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	
 	
 	case WM_KEYDOWN:
+	{
+		gl.keyDownEvent(wParam);
+		break;
+	}
 	case WM_LBUTTONDOWN:
+	{
+		gl.keyDownEvent(VK_LBUTTON);
+		break;
+	}
 	case WM_RBUTTONDOWN:
 	{
 		gl.keyDownEvent(message);
